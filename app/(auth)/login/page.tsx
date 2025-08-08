@@ -150,16 +150,25 @@ export default function LoginPage() {
 
       <div className="w-full max-w-md px-4">
         <div className="text-center mb-6">
-          <div className="mx-auto mb-3 h-12 w-12 rounded-full bg-sky-100 grid place-items-center">
-            <Globe className="text-sky-600" />
+          <div className="mx-auto mb-4 w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+            <svg viewBox="0 0 24 24" className="w-10 h-10 text-white" fill="currentColor">
+              <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z"/>
+              <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </div>
-          <h1 className="text-2xl font-semibold">{'WordifyAI'}</h1>
-          <p className="text-sm text-muted-foreground">{'Hemen kelime öğrenmeye başla!'}</p>
+
+          {/* Modern Typography */}
+          <div className="space-y-1">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-sky-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent tracking-tight">
+              Wordify<span className="text-sky-500 font-normal">AI</span>
+            </h1>
+            <p className="text-sm text-muted-foreground font-medium">{'Yapay zeka ile kelime öğrenme'}</p>
+          </div>
         </div>
 
         <Card className="border-sky-100 shadow-sm">
           <CardHeader>
-            <CardTitle>{'Giriş / Kayıt'}</CardTitle>
+            <CardTitle>{'Hoş Geldin!'}</CardTitle>
             <CardDescription>{'E-posta ile giriş yap ya da hızlıca kayıt ol.'}</CardDescription>
           </CardHeader>
           <CardContent>

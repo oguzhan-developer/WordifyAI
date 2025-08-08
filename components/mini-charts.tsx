@@ -18,20 +18,39 @@ export function MiniBars({ values = [], labels = [] as string[] }: { values?: nu
 }
 
 export function Donut({ percent = 0, size = 80 }: { percent?: number; size?: number }) {
-  const p = Math.max(0, Math.min(100, percent))
-  const bg = `conic-gradient(rgb(2,132,199) ${p * 3.6}deg, hsl(var(--muted)) 0deg)`
+  const p = Math.max(0, Math.min(100, Math.round(percent)))
+  const circumference = 2 * Math.PI * 35 // radius of 35 for a circle
+  const strokeDasharray = `${(p / 100) * circumference} ${circumference}`
+
   return (
-    <div
-      className="rounded-full grid place-items-center"
-      style={{
-        width: size,
-        height: size,
-        background: bg,
-      }}
-      aria-label="Yüzde ilerleme"
-    >
-      <div className="rounded-full bg-background" style={{ width: size - 18, height: size - 18 }}>
-        <div className="h-full grid place-items-center text-xs font-medium">{p}%</div>
+    <div className="relative" style={{ width: size, height: size }}>
+      <svg width={size} height={size} className="transform -rotate-90">
+        {/* Background circle */}
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r="35"
+          stroke="hsl(var(--muted))"
+          strokeWidth="8"
+          fill="none"
+        />
+        {/* Progress circle */}
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r="35"
+          stroke="rgb(2,132,199)"
+          strokeWidth="8"
+          fill="none"
+          strokeDasharray={strokeDasharray}
+          strokeLinecap="round"
+          className="transition-all duration-500"
+        />
+      </svg>
+      <div
+        className="absolute inset-0 flex items-center justify-center text-xs font-medium text-gray-900"
+      >
+        {p}%
       </div>
     </div>
   )

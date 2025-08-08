@@ -7,7 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { ListCard } from "@/components/list-card"
 import { MiniBars } from "@/components/mini-charts"
-import { Target, BarChart3, PlusCircle, ListChecks, PlayCircle, Plus, Loader2 } from 'lucide-react'
+import GoalsDashboard from "@/components/goals-dashboard"
+import { Target, BarChart3, PlusCircle, ListChecks, PlayCircle, Plus, Loader2, Flame, Calendar } from 'lucide-react'
 import { createSupabaseBrowserClient } from "@/lib/supabase/client"
 import { useToast } from "@/hooks/use-toast"
 import { computeListProgress } from "@/lib/progress"
@@ -29,6 +30,7 @@ export default function DashboardPage() {
   const [lists, setLists] = useState<ListRow[]>([])
   const [words, setWords] = useState<Word[]>([])
   const [todayReviews, setTodayReviews] = useState<Review[]>([])
+  const [quickStats, setQuickStats] = useState({ streakDays: 0, todayGoals: 0, totalGoals: 0 })
 
   useEffect(() => {
     ;(async () => {
@@ -42,15 +44,19 @@ export default function DashboardPage() {
 
         if (!token) throw new Error("Oturum bulunamadı")
 
-        const [lr, wr, rr] = await Promise.all([
+        const [lr, wr, rr, gr, sr] = await Promise.all([
           fetch("/api/db/lists", { headers: { Authorization: `Bearer ${token}` }, cache: "no-store" }),
           fetch("/api/db/words", { headers: { Authorization: `Bearer ${token}` }, cache: "no-store" }),
           fetch("/api/db/reviews?sinceDays=1", { headers: { Authorization: `Bearer ${token}` }, cache: "no-store" }),
+          fetch("/api/db/goals", { headers: { Authorization: `Bearer ${token}` }, cache: "no-store" }),
+          fetch("/api/db/streaks", { headers: { Authorization: `Bearer ${token}` }, cache: "no-store" }),
         ])
 
         const ld = await lr.json()
         const wd = await wr.json()
         const rd = await rr.json()
+        const gd = await gr.json()
+        const sd = await sr.json()
         if (!lr.ok) throw new Error(ld?.details || "Listeler alınamadı")
         if (!wr.ok) throw new Error(wd?.details || "Kelimeler alınamadı")
         if (!rr.ok) throw new Error(rd?.details || "İstatistik alınamadı")
@@ -63,6 +69,16 @@ export default function DashboardPage() {
           stats: w.stats,
         })))
         setTodayReviews(rd.reviews || [])
+
+        // Set quick stats for overview
+        const goals = gd.goals || []
+        const completedGoals = goals.filter((g: any) => g.todayProgress?.is_completed).length
+        const streaks = sd.streaks || {}
+        setQuickStats({
+          streakDays: streaks.daily_goal?.current_count || 0,
+          todayGoals: completedGoals,
+          totalGoals: goals.length
+        })
       } catch (e: any) {
         toast({ title: "Hata", description: e?.message || "Veri alınamadı", variant: "destructive" })
       } finally {
@@ -103,21 +119,101 @@ export default function DashboardPage() {
         </Link>
       </section>
 
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center">
-            <Target className="mr-2 h-4 w-4 text-sky-600" /> Günlük Hedef
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2">
-          <div className="flex justify-between text-sm">
-            <span>Bugün <span className="font-medium">{dailyGoal}</span> kelime hedefin var!</span>
-            <span className="text-muted-foreground">{todayLearned}/{dailyGoal}</span>
-          </div>
-          <Progress value={goalPct} />
-          <MiniBars values={[todayLearned, Math.max(0, dailyGoal - todayLearned)]} labels={["Öğrenildi", "Kaldı"]} />
-        </CardContent>
-      </Card>
+      {/* Quick Stats Overview */}
+      <section className="grid grid-cols-3 gap-3">
+        <Card className="relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-1 h-full bg-orange-500"></div>
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-2">
+              <Flame className="w-5 h-5 text-orange-600" />
+              <div>
+                <div className="text-xl font-bold text-orange-600">{quickStats.streakDays}</div>
+                <div className="text-xs text-gray-600">Gün Seri</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-1 h-full bg-green-500"></div>
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-2">
+              <Target className="w-5 h-5 text-green-600" />
+              <div>
+                <div className="text-xl font-bold text-green-600">{quickStats.todayGoals}/{quickStats.totalGoals}</div>
+                <div className="text-xs text-gray-600">Günlük Hedef</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-2">
+              <Calendar className="w-5 h-5 text-blue-600" />
+              <div>
+                <div className="text-xl font-bold text-blue-600">{totalLearned}</div>
+                <div className="text-xs text-gray-600">Öğrenilen</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+
+      {/* Simple Goals Overview */}
+      <section>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-base font-medium">Bugünkü Hedefler</h3>
+          <Link href="/app/stats" className="text-sm text-sky-700">Tüm Hedefler</Link>
+        </div>
+        {loading ? (
+          <Card className="animate-pulse">
+            <CardContent className="p-4">
+              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+            </CardContent>
+          </Card>
+        ) : quickStats.totalGoals === 0 ? (
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">
+                    Hedef belirle, başarı kazan! ✨
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    İstatistikler sayfasından ilk hedefini oluştur
+                  </p>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="text-2xl">🎯</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">
+                    {quickStats.todayGoals}/{quickStats.totalGoals} hedef tamamlandı
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {quickStats.streakDays} günlük serin devam ediyor
+                  </p>
+                </div>
+                <div className="flex items-center space-x-2">
+                  {quickStats.streakDays > 0 && <Flame className="w-5 h-5 text-orange-500" />}
+                  <span className="text-lg font-bold text-sky-600">
+                    {quickStats.todayGoals > 0 ? '🎯' : '⏳'}
+                  </span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </section>
 
       <Card>
         <CardHeader className="pb-2">
@@ -126,7 +222,19 @@ export default function DashboardPage() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <MiniBars values={[totalLearned, Math.max(0, words.length - totalLearned)]} labels={["Öğrenildi", "Sürmekte"]} />
+          {totalLearned === 0 && words.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-6">
+              <div className="w-12 h-12 bg-sky-100 rounded-full flex items-center justify-center mb-3">
+                <span className="text-2xl">🚀</span>
+              </div>
+              <h3 className="text-sm font-semibold text-gray-900 mb-1">Hadi başlayalım!</h3>
+              <p className="text-xs text-gray-600 text-center">
+                İlk kelimeni ekle ve öğrenme serüvenine başla
+              </p>
+            </div>
+          ) : (
+            <MiniBars values={[totalLearned, Math.max(0, words.length - totalLearned)]} labels={["Öğrenildi", "Sürmekte"]} />
+          )}
         </CardContent>
       </Card>
 
