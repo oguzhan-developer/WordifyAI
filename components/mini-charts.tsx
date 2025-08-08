@@ -1,5 +1,7 @@
 "use client"
 
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts'
+
 export function MiniBars({ values = [], labels = [] as string[] }: { values?: number[]; labels?: string[] }) {
   const max = Math.max(1, ...values)
   return (
@@ -54,6 +56,74 @@ export function Donut({ percent = 0, size = 80, className = "", showLabel = true
           {p}%
         </div>
       )}
+    </div>
+  )
+}
+
+// Enhanced stats chart using Recharts for better visualization
+export function EnhancedStatsChart({ values = [], labels = [] }: { values?: number[]; labels?: string[] }) {
+  const data = values.map((value, index) => ({
+    name: labels[index] || `Gün ${index + 1}`,
+    value: value,
+    isToday: index === values.length - 1
+  }))
+
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-white p-3 border rounded-lg shadow-lg">
+          <p className="font-medium text-gray-900">{label}</p>
+          <p className="text-blue-600">
+            <span className="font-semibold">{payload[0].value}</span> kelime öğrenildi
+          </p>
+        </div>
+      )
+    }
+    return null
+  }
+
+  const CustomBar = (props: any) => {
+    const { fill, payload, ...rest } = props
+    const isToday = payload?.isToday
+    const isActive = payload?.value > 0
+    
+    let barFill = '#e2e8f0' // gray-300 for empty days
+    if (isActive && isToday) {
+      barFill = '#3b82f6' // blue-500 for today with activity
+    } else if (isActive) {
+      barFill = '#60a5fa' // blue-400 for other active days
+    }
+    
+    return <Bar {...rest} fill={barFill} radius={[2, 2, 0, 0]} />
+  }
+
+  return (
+    <div className="w-full h-48">
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+          <XAxis 
+            dataKey="name" 
+            axisLine={false}
+            tickLine={false}
+            tick={{ fontSize: 12, fill: '#6b7280' }}
+            angle={-45}
+            textAnchor="end"
+            height={60}
+          />
+          <YAxis 
+            axisLine={false}
+            tickLine={false}
+            tick={{ fontSize: 12, fill: '#6b7280' }}
+            width={30}
+          />
+          <Tooltip content={<CustomTooltip />} />
+          <Bar 
+            dataKey="value" 
+            shape={<CustomBar />}
+            className="hover:opacity-80 transition-opacity"
+          />
+        </BarChart>
+      </ResponsiveContainer>
     </div>
   )
 }

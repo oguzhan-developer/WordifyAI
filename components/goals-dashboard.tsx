@@ -216,13 +216,20 @@ export default function GoalsDashboard() {
             const streak = streaks[key as keyof Streak] as { current_count: number; longest_count: number }
             const isNewUser = streak.current_count === 0 && streak.longest_count === 0
 
+            const colorClasses = {
+              blue: { bg: 'bg-blue-500', bgLight: 'bg-blue-100', text: 'text-blue-600' },
+              green: { bg: 'bg-green-500', bgLight: 'bg-green-100', text: 'text-green-600' },
+              purple: { bg: 'bg-purple-500', bgLight: 'bg-purple-100', text: 'text-purple-600' }
+            }
+            const colors = colorClasses[type.color as keyof typeof colorClasses] || colorClasses.blue
+
             return (
-              <Card key={key} className="relative overflow-hidden">
-                <div className={`absolute top-0 left-0 w-1 h-full bg-${type.color}-500`}></div>
+              <Card key={key} className="relative overflow-hidden hover:shadow-md transition-shadow">
+                <div className={`absolute top-0 left-0 w-1 h-full ${colors.bg}`}></div>
                 <CardContent className="p-4">
                   <div className="flex items-center space-x-3">
-                    <div className={`p-2 rounded-lg bg-${type.color}-100`}>
-                      <type.icon className={`w-5 h-5 text-${type.color}-600`} />
+                    <div className={`p-2 rounded-lg ${colors.bgLight}`}>
+                      <type.icon className={`w-5 h-5 ${colors.text}`} />
                     </div>
                     <div className="flex-1">
                       <p className="text-sm font-medium text-gray-600">{type.label}</p>
@@ -297,14 +304,23 @@ export default function GoalsDashboard() {
           const progress = (goal.todayProgress.current_value / goal.todayProgress.target_value) * 100
           const IconComponent = goalType.icon
 
+          const goalColorClasses = {
+            blue: { bg: 'bg-blue-500', bgLight: 'bg-blue-100', text: 'text-blue-600' },
+            green: { bg: 'bg-green-500', bgLight: 'bg-green-100', text: 'text-green-600' },
+            purple: { bg: 'bg-purple-500', bgLight: 'bg-purple-100', text: 'text-purple-600' },
+            orange: { bg: 'bg-orange-500', bgLight: 'bg-orange-100', text: 'text-orange-600' },
+            indigo: { bg: 'bg-indigo-500', bgLight: 'bg-indigo-100', text: 'text-indigo-600' }
+          }
+          const goalColors = goalColorClasses[goalType.color as keyof typeof goalColorClasses] || goalColorClasses.blue
+
           return (
-            <Card key={goal.id} className="relative overflow-hidden">
-              <div className={`absolute top-0 left-0 w-1 h-full bg-${goalType.color}-500`}></div>
+            <Card key={goal.id} className="relative overflow-hidden hover:shadow-md transition-shadow">
+              <div className={`absolute top-0 left-0 w-1 h-full ${goalColors.bg}`}></div>
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <div className={`p-2 rounded-lg bg-${goalType.color}-100`}>
-                      <IconComponent className={`w-5 h-5 text-${goalType.color}-600`} />
+                    <div className={`p-2 rounded-lg ${goalColors.bgLight}`}>
+                      <IconComponent className={`w-5 h-5 ${goalColors.text}`} />
                     </div>
                     <div>
                       <CardTitle className="text-lg">{goalType.label}</CardTitle>
