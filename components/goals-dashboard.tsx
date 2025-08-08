@@ -138,7 +138,7 @@ export default function GoalsDashboard() {
       <div className="space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {[...Array(6)].map((_, i) => (
-            <Card key={i} className="animate-pulse overflow-hidden">
+                         <Card key={i} className="animate-pulse">
               <CardContent className="p-6">
                 <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
                 <div className="h-8 bg-gray-200 rounded w-1/2"></div>
@@ -153,14 +153,14 @@ export default function GoalsDashboard() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
+      <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-xl font-bold text-gray-900">Hedefler ve Seriler</h2>
           <p className="text-gray-600 text-sm">Günlük hedeflerini takip et ve serilerini koru</p>
         </div>
         <Dialog open={newGoalOpen} onOpenChange={setNewGoalOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-blue-600 hover:bg-blue-700 whitespace-nowrap px-3 py-2 h-auto leading-none">
+                         <Button className="bg-blue-600 hover:bg-blue-700">
               <Plus className="w-4 h-4 mr-2" />
               Yeni Hedef
             </Button>
@@ -211,7 +211,7 @@ export default function GoalsDashboard() {
 
       {/* Streaks Section */}
       {streaks && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {Object.entries(STREAK_TYPES).map(([key, type]) => {
             const streak = streaks[key as keyof Streak] as { current_count: number; longest_count: number }
             const isNewUser = streak.current_count === 0 && streak.longest_count === 0
@@ -291,7 +291,7 @@ export default function GoalsDashboard() {
       )}
 
       {/* Goals Section */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {goals.map((goal) => {
           const goalType = GOAL_TYPES[goal.goal_type as keyof typeof GOAL_TYPES]
           const progress = (goal.todayProgress.current_value / goal.todayProgress.target_value) * 100

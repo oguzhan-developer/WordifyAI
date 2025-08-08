@@ -17,43 +17,41 @@ export function MiniBars({ values = [], labels = [] as string[] }: { values?: nu
   )
 }
 
-export function Donut({ percent = 0, size = 80, className = "", showLabel = true }: { percent?: number; size?: number; className?: string; showLabel?: boolean }) {
+export function Donut({ percent = 0, size = 80 }: { percent?: number; size?: number }) {
   const p = Math.max(0, Math.min(100, Math.round(percent)))
-  const strokeWidth = 8
-  const radius = Math.max(1, size / 2 - strokeWidth)
-  const circumference = 2 * Math.PI * radius
-  const dash = (p / 100) * circumference
+  const circumference = 2 * Math.PI * 35 // radius of 35 for a circle
+  const strokeDasharray = `${(p / 100) * circumference} ${circumference}`
 
   return (
-    <div className={`relative ${className}`} style={{ width: size, height: size }}>
+    <div className="relative" style={{ width: size, height: size }}>
       <svg width={size} height={size} className="transform -rotate-90">
         {/* Background circle */}
         <circle
           cx={size / 2}
           cy={size / 2}
-          r={radius}
+          r="35"
           stroke="hsl(var(--muted))"
-          strokeWidth={strokeWidth}
+          strokeWidth="8"
           fill="none"
         />
         {/* Progress circle */}
         <circle
           cx={size / 2}
           cy={size / 2}
-          r={radius}
-          stroke="currentColor"
-          strokeWidth={strokeWidth}
+          r="35"
+          stroke="rgb(2,132,199)"
+          strokeWidth="8"
           fill="none"
-          strokeDasharray={`${dash} ${circumference}`}
+          strokeDasharray={strokeDasharray}
           strokeLinecap="round"
           className="transition-all duration-500"
         />
       </svg>
-      {showLabel && (
-        <div className="absolute inset-0 flex items-center justify-center text-xs font-medium text-gray-900">
-          {p}%
-        </div>
-      )}
+      <div
+        className="absolute inset-0 flex items-center justify-center text-xs font-medium text-gray-900"
+      >
+        {p}%
+      </div>
     </div>
   )
 }
