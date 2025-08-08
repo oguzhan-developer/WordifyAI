@@ -109,7 +109,7 @@ export default function DailyProgress({ className }: DailyProgressProps) {
     <div className={`space-y-6 ${className}`}>
       {/* Summary Cards */}
       {summary && (
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           <Card className="relative overflow-hidden">
             <div className="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
             <CardContent className="p-3">

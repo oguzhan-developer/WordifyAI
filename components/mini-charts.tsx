@@ -17,41 +17,43 @@ export function MiniBars({ values = [], labels = [] as string[] }: { values?: nu
   )
 }
 
-export function Donut({ percent = 0, size = 80 }: { percent?: number; size?: number }) {
+export function Donut({ percent = 0, size = 80, className = "", showLabel = true }: { percent?: number; size?: number; className?: string; showLabel?: boolean }) {
   const p = Math.max(0, Math.min(100, Math.round(percent)))
-  const circumference = 2 * Math.PI * 35 // radius of 35 for a circle
-  const strokeDasharray = `${(p / 100) * circumference} ${circumference}`
+  const strokeWidth = 8
+  const radius = Math.max(1, size / 2 - strokeWidth)
+  const circumference = 2 * Math.PI * radius
+  const dash = (p / 100) * circumference
 
   return (
-    <div className="relative" style={{ width: size, height: size }}>
+    <div className={`relative ${className}`} style={{ width: size, height: size }}>
       <svg width={size} height={size} className="transform -rotate-90">
         {/* Background circle */}
         <circle
           cx={size / 2}
           cy={size / 2}
-          r="35"
+          r={radius}
           stroke="hsl(var(--muted))"
-          strokeWidth="8"
+          strokeWidth={strokeWidth}
           fill="none"
         />
         {/* Progress circle */}
         <circle
           cx={size / 2}
           cy={size / 2}
-          r="35"
-          stroke="rgb(2,132,199)"
-          strokeWidth="8"
+          r={radius}
+          stroke="currentColor"
+          strokeWidth={strokeWidth}
           fill="none"
-          strokeDasharray={strokeDasharray}
+          strokeDasharray={`${dash} ${circumference}`}
           strokeLinecap="round"
           className="transition-all duration-500"
         />
       </svg>
-      <div
-        className="absolute inset-0 flex items-center justify-center text-xs font-medium text-gray-900"
-      >
-        {p}%
-      </div>
+      {showLabel && (
+        <div className="absolute inset-0 flex items-center justify-center text-xs font-medium text-gray-900">
+          {p}%
+        </div>
+      )}
     </div>
   )
 }
