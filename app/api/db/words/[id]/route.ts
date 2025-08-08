@@ -9,7 +9,7 @@ function getToken(req: Request) {
   return null
 }
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const token = getToken(req)
     if (!token) return NextResponse.json({ error: "unauthorized" }, { status: 401 })
@@ -22,7 +22,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     if (userErr || !user?.id) return NextResponse.json({ error: "unauthorized" }, { status: 401 })
     const userId = user.id
 
-    const id = params.id
+    const { id } = await params
     const body = await req.json()
     const text: string = (body?.text || "").toString().trim()
     const note: string = (body?.note || "").toString()
@@ -74,12 +74,12 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   }
 }
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const token = getToken(req)
     if (!token) return NextResponse.json({ error: "unauthorized" }, { status: 401 })
     const supabase = createSupabaseServerClientWithToken(token)
-    const id = params.id
+    const { id } = await params
     if (!id) return NextResponse.json({ error: "id-required" }, { status: 400 })
     const { error } = await supabase.from("words").delete().eq("id", id)
     if (error) return NextResponse.json({ error: "db-error", details: error.message }, { status: 500 })
