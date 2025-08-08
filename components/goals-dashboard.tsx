@@ -136,9 +136,9 @@ export default function GoalsDashboard() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {[...Array(6)].map((_, i) => (
-            <Card key={i} className="animate-pulse">
+            <Card key={i} className="animate-pulse overflow-hidden">
               <CardContent className="p-6">
                 <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
                 <div className="h-8 bg-gray-200 rounded w-1/2"></div>
@@ -153,14 +153,14 @@ export default function GoalsDashboard() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
         <div>
           <h2 className="text-xl font-bold text-gray-900">Hedefler ve Seriler</h2>
           <p className="text-gray-600 text-sm">Günlük hedeflerini takip et ve serilerini koru</p>
         </div>
         <Dialog open={newGoalOpen} onOpenChange={setNewGoalOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-blue-600 hover:bg-blue-700">
+            <Button className="bg-blue-600 hover:bg-blue-700 whitespace-nowrap px-3 py-2 h-auto leading-none">
               <Plus className="w-4 h-4 mr-2" />
               Yeni Hedef
             </Button>
@@ -211,7 +211,7 @@ export default function GoalsDashboard() {
 
       {/* Streaks Section */}
       {streaks && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {Object.entries(STREAK_TYPES).map(([key, type]) => {
             const streak = streaks[key as keyof Streak] as { current_count: number; longest_count: number }
             const isNewUser = streak.current_count === 0 && streak.longest_count === 0
@@ -227,9 +227,18 @@ export default function GoalsDashboard() {
                     <div className="flex-1">
                       <p className="text-sm font-medium text-gray-600">{type.label}</p>
                       {isNewUser ? (
-                        <div>
-                          <div className="text-lg font-bold text-gray-900">Başlayalım!</div>
-                          <p className="text-xs text-gray-500">İlk serinizi oluşturun</p>
+                        <div className="flex items-center gap-2 min-w-0">
+                          <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                            {key === 'daily_goal' ? '🎯' : key === 'learning_days' ? '🌱' : '⭐'}
+                          </div>
+                          <div className="min-w-0">
+                            <div className="text-sm font-semibold text-gray-900 truncate">
+                              {key === 'daily_goal' ? 'Hedef belirle' : key === 'learning_days' ? 'İlk öğrenme günü' : 'Mükemmel günler'}
+                            </div>
+                            <p className="text-xs text-gray-500 truncate">
+                              {key === 'daily_goal' ? 'Günlük hedefini ayarla ve seriye başla' : key === 'learning_days' ? 'Bugün başlayarak gün serini oluştur' : 'Hatasız bir gün yakalamayı dene'}
+                            </p>
+                          </div>
                         </div>
                       ) : (
                         <div>
@@ -282,7 +291,7 @@ export default function GoalsDashboard() {
       )}
 
       {/* Goals Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {goals.map((goal) => {
           const goalType = GOAL_TYPES[goal.goal_type as keyof typeof GOAL_TYPES]
           const progress = (goal.todayProgress.current_value / goal.todayProgress.target_value) * 100

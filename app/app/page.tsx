@@ -223,14 +223,17 @@ export default function DashboardPage() {
         </CardHeader>
         <CardContent>
           {totalLearned === 0 && words.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-6">
-              <div className="w-12 h-12 bg-sky-100 rounded-full flex items-center justify-center mb-3">
-                <span className="text-2xl">🚀</span>
+            <div className="flex items-center justify-between p-3 rounded-md bg-sky-50">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                  <span className="text-xl">🚀</span>
+                </div>
+                <div>
+                  <div className="text-sm font-semibold text-sky-900">İlk adımı at!</div>
+                  <div className="text-xs text-sky-700">İlk kelimeni eklediğinde burası dolacak.</div>
+                </div>
               </div>
-              <h3 className="text-sm font-semibold text-gray-900 mb-1">Hadi başlayalım!</h3>
-              <p className="text-xs text-gray-600 text-center">
-                İlk kelimeni ekle ve öğrenme serüvenine başla
-              </p>
+              <Link href="/app/add/select-list" className="text-sm text-sky-700 whitespace-nowrap">Hemen ekle →</Link>
             </div>
           ) : (
             <MiniBars values={[totalLearned, Math.max(0, words.length - totalLearned)]} labels={["Öğrenildi", "Sürmekte"]} />

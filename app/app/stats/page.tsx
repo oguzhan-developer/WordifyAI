@@ -72,10 +72,12 @@ export default function StatsPage() {
       arr.push(byDay[key] || 0)
     }
 
+    const weeklyTotalCalc = arr.reduce((a, b) => a + b, 0)
+
     return {
       dailyCounts: arr,
-      weeklyTotal: arr.reduce((a, b) => a + b, 0),
-      hasAnyData: hasData || words.length > 0
+      weeklyTotal: weeklyTotalCalc,
+      hasAnyData: weeklyTotalCalc > 0
     }
   }, [reviews, words])
 
@@ -135,17 +137,19 @@ export default function StatsPage() {
                   </p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {lists.map((l) => {
                     const inList = words.filter((w) => w.listId === l.id) as any
                     const pct = computeListProgress(inList)
                     return (
-                      <div key={l.id} className="flex flex-col items-center p-4 rounded-lg border bg-gray-50">
-                        <Donut percent={pct} size={80} />
-                        <div className="mt-3 text-center">
-                          <div className="font-medium text-gray-900 text-sm">{l.name}</div>
-                          <div className="text-lg font-bold text-blue-600 mt-1">{pct}% tamamlandı</div>
-                          <div className="text-xs text-gray-500">{inList.length} kelime</div>
+                      <div key={l.id} className="flex items-center gap-4 p-4 rounded-lg border bg-white">
+                        <div className="text-sky-600">
+                          <Donut percent={pct} size={72} className="text-sky-600" showLabel={false} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium text-gray-900 truncate">{l.name}</div>
+                          <div className="text-sm text-muted-foreground">{inList.length} kelime</div>
+                          <div className="mt-1 text-sm font-semibold text-sky-600">%{pct} tamamlandı</div>
                         </div>
                       </div>
                     )
