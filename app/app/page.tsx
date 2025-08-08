@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress"
 import { ListCard } from "@/components/list-card"
 import { MiniBars } from "@/components/mini-charts"
 import GoalsDashboard from "@/components/goals-dashboard"
+import DailyTip from "@/components/daily-tip"
 import { Target, BarChart3, PlusCircle, ListChecks, PlayCircle, Plus, Loader2, Flame, Calendar } from 'lucide-react'
 import { createSupabaseBrowserClient } from "@/lib/supabase/client"
 import { useToast } from "@/hooks/use-toast"
@@ -95,25 +96,41 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <section className="pt-4">
-        <h2 className="text-lg font-semibold">Merhaba, {userName} 👋</h2>
-        <p className="text-sm text-muted-foreground">
-          Toplam öğrenilen kelime: <span className="font-medium">{totalLearned}</span>
-        </p>
+        <div className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 rounded-lg p-4 border border-blue-200">
+          <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            Merhaba, {userName} 👋
+          </h2>
+          <p className="text-sm text-gray-600 mt-1">
+            {totalLearned > 0 ? (
+              <>
+                Harika! Şu ana kadar <span className="font-bold text-blue-600">{totalLearned}</span> kelime öğrendin.
+                {quickStats.streakDays > 0 && (
+                  <span className="ml-2 inline-flex items-center gap-1">
+                    <Flame className="w-4 h-4 text-orange-500" />
+                    <span className="font-medium text-orange-600">{quickStats.streakDays} günlük serin devam ediyor!</span>
+                  </span>
+                )}
+              </>
+            ) : (
+              "Öğrenme yolculuğuna hoş geldin! İlk kelimeni öğrenmeye hazır mısın?"
+            )}
+          </p>
+        </div>
       </section>
 
-      <section className="grid grid-cols-3 gap-2">
+      <section className="grid grid-cols-3 gap-3">
         <Link href="/app/add/select-list" className="col-span-3">
-          <Button className="w-full bg-sky-600 hover:bg-sky-700">
-            <PlusCircle className="mr-2 h-4 w-4" /> Yeni Kelime Ekle
+          <Button className="w-full bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all">
+            <PlusCircle className="mr-2 h-5 w-5" /> Yeni Kelime Ekle
           </Button>
         </Link>
         <Link href="/app/lists">
-          <Button variant="outline" className="w-full">
-            <ListChecks className="mr-2 h-4 w-4" /> Liste
+          <Button variant="outline" className="w-full border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all">
+            <ListChecks className="mr-2 h-4 w-4" /> Listeler
           </Button>
         </Link>
         <Link href="/app/learn/select-list" className="col-span-2">
-          <Button variant="outline" className="w-full">
+          <Button variant="outline" className="w-full border-2 border-green-200 text-green-700 hover:bg-green-50 hover:border-green-300 transition-all">
             <PlayCircle className="mr-2 h-4 w-4" /> Öğrenmeye Başla
           </Button>
         </Link>
@@ -121,45 +138,58 @@ export default function DashboardPage() {
 
       {/* Quick Stats Overview */}
       <section className="grid grid-cols-3 gap-3">
-        <Card className="relative overflow-hidden">
+        <Card className="relative overflow-hidden hover:shadow-md transition-shadow bg-gradient-to-br from-orange-50 to-red-50 border-orange-200">
           <div className="absolute top-0 left-0 w-1 h-full bg-orange-500"></div>
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
-              <Flame className="w-5 h-5 text-orange-600" />
+              <div className="p-2 rounded-lg bg-orange-100">
+                <Flame className="w-5 h-5 text-orange-600" />
+              </div>
               <div>
                 <div className="text-xl font-bold text-orange-600">{quickStats.streakDays}</div>
-                <div className="text-xs text-gray-600">Gün Seri</div>
+                <div className="text-xs text-orange-700">Gün Seri</div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="relative overflow-hidden">
+        <Card className="relative overflow-hidden hover:shadow-md transition-shadow bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
           <div className="absolute top-0 left-0 w-1 h-full bg-green-500"></div>
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
-              <Target className="w-5 h-5 text-green-600" />
+              <div className="p-2 rounded-lg bg-green-100">
+                <Target className="w-5 h-5 text-green-600" />
+              </div>
               <div>
                 <div className="text-xl font-bold text-green-600">{quickStats.todayGoals}/{quickStats.totalGoals}</div>
-                <div className="text-xs text-gray-600">Günlük Hedef</div>
+                <div className="text-xs text-green-700">Günlük Hedef</div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="relative overflow-hidden">
+        <Card className="relative overflow-hidden hover:shadow-md transition-shadow bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200">
           <div className="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
-              <Calendar className="w-5 h-5 text-blue-600" />
+              <div className="p-2 rounded-lg bg-blue-100">
+                <Calendar className="w-5 h-5 text-blue-600" />
+              </div>
               <div>
                 <div className="text-xl font-bold text-blue-600">{totalLearned}</div>
-                <div className="text-xs text-gray-600">Öğrenilen</div>
+                <div className="text-xs text-blue-700">Öğrenilen</div>
               </div>
             </div>
           </CardContent>
         </Card>
       </section>
+
+      {/* Daily Tip */}
+      <DailyTip
+        totalWords={totalLearned}
+        streak={quickStats.streakDays}
+        hasRecentActivity={todayLearned > 0}
+      />
 
       {/* Simple Goals Overview */}
       <section>

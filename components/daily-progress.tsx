@@ -110,7 +110,7 @@ export default function DailyProgress({ className }: DailyProgressProps) {
       {/* Summary Cards */}
       {summary && (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-          <Card className="relative overflow-hidden">
+          <Card className="relative overflow-hidden hover:shadow-md transition-shadow">
             <div className="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
             <CardContent className="p-3">
               <div className="text-center">
@@ -121,7 +121,7 @@ export default function DailyProgress({ className }: DailyProgressProps) {
             </CardContent>
           </Card>
 
-          <Card className="relative overflow-hidden">
+          <Card className="relative overflow-hidden hover:shadow-md transition-shadow">
             <div className="absolute top-0 left-0 w-1 h-full bg-green-500"></div>
             <CardContent className="p-3">
               <div className="text-center">
@@ -132,7 +132,7 @@ export default function DailyProgress({ className }: DailyProgressProps) {
             </CardContent>
           </Card>
 
-          <Card className="relative overflow-hidden">
+          <Card className="relative overflow-hidden hover:shadow-md transition-shadow">
             <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500"></div>
             <CardContent className="p-3">
               <div className="text-center">
@@ -143,7 +143,7 @@ export default function DailyProgress({ className }: DailyProgressProps) {
             </CardContent>
           </Card>
 
-          <Card className="relative overflow-hidden">
+          <Card className="relative overflow-hidden hover:shadow-md transition-shadow">
             <div className="absolute top-0 left-0 w-1 h-full bg-purple-500"></div>
             <CardContent className="p-3">
               <div className="text-center">
@@ -154,7 +154,7 @@ export default function DailyProgress({ className }: DailyProgressProps) {
             </CardContent>
           </Card>
 
-          <Card className="relative overflow-hidden">
+          <Card className="relative overflow-hidden hover:shadow-md transition-shadow">
             <div className="absolute top-0 left-0 w-1 h-full bg-orange-500"></div>
             <CardContent className="p-3">
               <div className="text-center">
@@ -203,30 +203,32 @@ export default function DailyProgress({ className }: DailyProgressProps) {
                   : 0
 
                 return (
-                  <div key={activity.date} className="border rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center space-x-3">
-                        <Calendar className="w-4 h-4 text-gray-400" />
-                        <span className="font-medium">{formatDate(activity.date)}</span>
-                        <Badge 
-                          variant="secondary" 
-                          className={`${activityLevel.color} text-gray-700`}
-                        >
-                          {activityLevel.text}
-                        </Badge>
-                        {activity.perfect_day && (
-                          <Badge className="bg-yellow-100 text-yellow-800">
-                            <CheckCircle className="w-3 h-3 mr-1" />
-                            Mükemmel Gün
+                  <Card key={activity.date} className="hover:shadow-md transition-shadow">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+                        <div className="flex items-center space-x-3 flex-wrap">
+                          <Calendar className="w-4 h-4 text-gray-400" />
+                          <span className="font-medium">{formatDate(activity.date)}</span>
+                          <Badge 
+                            variant="secondary" 
+                            className={`${activityLevel.color} text-gray-700`}
+                          >
+                            {activityLevel.text}
                           </Badge>
-                        )}
+                          {activity.perfect_day && (
+                            <Badge className="bg-yellow-100 text-yellow-800">
+                              <CheckCircle className="w-3 h-3 mr-1" />
+                              Mükemmel Gün
+                            </Badge>
+                          )}
+                        </div>
+                        <div className="text-sm text-gray-600 flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          {activity.time_spent_minutes} dakika
+                        </div>
                       </div>
-                      <div className="text-sm text-gray-600">
-                        {activity.time_spent_minutes} dakika
-                      </div>
-                    </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
                       <div className="text-center">
                         <div className="text-lg font-semibold text-blue-600">
                           {activity.words_learned}
@@ -272,7 +274,8 @@ export default function DailyProgress({ className }: DailyProgressProps) {
                         <Progress value={accuracy} className="h-2" />
                       </div>
                     )}
-                  </div>
+                    </CardContent>
+                  </Card>
                 )
               })}
             </div>

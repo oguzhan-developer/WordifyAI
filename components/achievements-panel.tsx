@@ -145,28 +145,28 @@ export default function AchievementsPanel() {
     <div className="space-y-6">
       {/* Header Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <Card className="relative overflow-hidden">
+        <Card className="relative overflow-hidden hover:shadow-md transition-shadow">
           <div className="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
           <CardContent className="p-3 text-center">
             <div className="text-xl font-bold text-blue-600">{data.stats.words_learned}</div>
             <div className="text-xs text-gray-600">Kelime</div>
           </CardContent>
         </Card>
-        <Card className="relative overflow-hidden">
+        <Card className="relative overflow-hidden hover:shadow-md transition-shadow">
           <div className="absolute top-0 left-0 w-1 h-full bg-orange-500"></div>
           <CardContent className="p-3 text-center">
             <div className="text-xl font-bold text-orange-600">{data.stats.streak_days}</div>
             <div className="text-xs text-gray-600">Gün Seri</div>
           </CardContent>
         </Card>
-        <Card className="relative overflow-hidden">
+        <Card className="relative overflow-hidden hover:shadow-md transition-shadow">
           <div className="absolute top-0 left-0 w-1 h-full bg-purple-500"></div>
           <CardContent className="p-3 text-center">
             <div className="text-xl font-bold text-purple-600">{data.stats.perfect_days}</div>
             <div className="text-xs text-gray-600">Mükemmel</div>
           </CardContent>
         </Card>
-        <Card className="relative overflow-hidden">
+        <Card className="relative overflow-hidden hover:shadow-md transition-shadow">
           <div className="absolute top-0 left-0 w-1 h-full bg-green-500"></div>
           <CardContent className="p-3 text-center">
             <div className="text-xl font-bold text-green-600">{data.stats.reviews_total}</div>
@@ -207,11 +207,25 @@ export default function AchievementsPanel() {
           ) : (
             <Card>
               <CardContent className="flex flex-col items-center justify-center py-12">
-                <Award className="w-12 h-12 text-gray-400 mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Henüz yeni başarım yok</h3>
-                <p className="text-gray-600 text-center">
-                  Öğrenmeye devam et, yakında yeni başarımlar kazanacaksın!
+                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center mb-6">
+                  <Trophy className="w-10 h-10 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">İlk başarın seni bekliyor!</h3>
+                <p className="text-gray-600 text-center mb-6 max-w-md">
+                  Her öğrendiğin kelime, her tamamladığın hedef seni yeni başarılara götürüyor.
                 </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md">
+                  <div className="bg-blue-50 p-4 rounded-lg text-center">
+                    <div className="text-3xl mb-2">🎯</div>
+                    <div className="text-sm font-medium text-blue-900">İlk Hedef</div>
+                    <div className="text-xs text-blue-600">5 kelime öğren</div>
+                  </div>
+                  <div className="bg-green-50 p-4 rounded-lg text-center">
+                    <div className="text-3xl mb-2">📚</div>
+                    <div className="text-sm font-medium text-green-900">İlk Liste</div>
+                    <div className="text-xs text-green-600">Bir liste tamamla</div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           )}
