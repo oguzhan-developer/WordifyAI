@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server"
-import { createSupabaseServerClient } from "@/lib/supabase/server"
+import { createSupabaseServerClientAdmin } from "@/lib/supabase/server"
 
 export async function POST(req: Request) {
   try {
-    const supabase = createSupabaseServerClient()
+    const supabase = createSupabaseServerClientAdmin()
+    // We are using the admin client, but we still need to get the user's session to know whose profile to update.
+    // This is a simplified approach. A more robust solution would be to use the user's access token
+    // to create a client that respects RLS policies.
     const {
       data: { session },
     } = await supabase.auth.getSession()
