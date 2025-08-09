@@ -22,7 +22,7 @@ export async function POST(req: Request) {
       prompt:
         `Provide exactly 2 concise meanings and 3 natural example sentences for the English word: "${word}".` +
         " Return only valid JSON in the following schema: {\"meanings\": string[], \"examples\": string[]}. Keep meanings short (max 8 words).",
-      maxOutputTokens: 300,
+      maxTokens: 300,
     })
 
     let data: any

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 
 export default function Page() {
   const router = useRouter()
+  
   useEffect(() => {
     try {
       // Check if onboarding is completed
@@ -27,6 +28,7 @@ export default function Page() {
       router.replace("/onboarding")
     }
   }, [router])
+  
   return (
     <main className="min-h-svh grid place-items-center">
       <p className="text-muted-foreground">{'Yükleniyor...'}</p>

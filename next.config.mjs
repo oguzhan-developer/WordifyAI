@@ -71,14 +71,8 @@ const nextConfig = {
     },
   ],
   
-  // Redirects for SEO
-  redirects: async () => [
-    {
-      source: '/login',
-      destination: '/',
-      permanent: false,
-    },
-  ],
+  // Redirects for SEO (none; avoid conflicting with app router navigation)
+  redirects: async () => [],
   
   // Performance optimizations
   poweredByHeader: false,
