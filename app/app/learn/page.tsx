@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import Link from "next/link"
 import { useSearchParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -14,6 +14,14 @@ type ListRow = { id: string; name: string }
 type Word = { id: string; listId: string }
 
 export default function LearnModesPage() {
+  return (
+    <Suspense fallback={<div className="min-h-[40svh] grid place-items-center text-sm text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" /> Yükleniyor...</div>}>
+      <LearnModesPageContent />
+    </Suspense>
+  )
+}
+
+function LearnModesPageContent() {
   const params = useSearchParams()
   const router = useRouter()
   const supabase = createSupabaseBrowserClient()

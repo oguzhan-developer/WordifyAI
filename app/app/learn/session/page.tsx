@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -17,6 +17,14 @@ type VocabWord = {
 }
 
 export default function SessionPage() {
+  return (
+    <Suspense fallback={<div className="py-6 text-sm text-muted-foreground">Yükleniyor...</div>}>
+      <SessionPageContent />
+    </Suspense>
+  )
+}
+
+function SessionPageContent() {
   const params = useSearchParams()
   const router = useRouter()
   const supabase = createSupabaseBrowserClient()

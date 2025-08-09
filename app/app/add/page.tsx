@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState, Suspense } from "react"
 import Link from "next/link"
 import { useSearchParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -27,6 +27,14 @@ type DetailsEntry = {
 type DetailsMap = Record<string, DetailsEntry>
 
 export default function AddWordPage() {
+  return (
+    <Suspense fallback={<div className="min-h-[40svh] grid place-items-center text-sm text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" /> Yükleniyor...</div>}>
+      <AddWordPageContent />
+    </Suspense>
+  )
+}
+
+function AddWordPageContent() {
   const router = useRouter()
   const params = useSearchParams()
   const supabase = createSupabaseBrowserClient()
