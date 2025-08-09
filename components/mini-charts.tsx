@@ -26,33 +26,45 @@ export function Donut({ percent = 0, size = 80, className = "", showLabel = true
   const circumference = 2 * Math.PI * radius
   const dash = (p / 100) * circumference
 
+  // Renkleri yüzdeye göre belirle (kırmızı -> sarı -> mavi -> yeşil)
+  const getColorByPercent = (value: number) => {
+    if (value < 25) return "#ef4444" // red-500
+    if (value < 50) return "#f59e0b" // amber-500
+    if (value < 75) return "#3b82f6" // blue-500
+    return "#10b981" // emerald-500
+  }
+
+  const progressColor = getColorByPercent(p)
+  const labelColor = progressColor
+  const trackColor = "#e5e7eb" // gray-200
+
   return (
-    <div className={`relative ${className}`} style={{ width: size, height: size }}>
+    <div className={`relative ${className}`} style={{ width: size, height: size }} aria-label={`İlerleme: ${p}%`}>
       <svg width={size} height={size} className="transform -rotate-90">
-        {/* Background circle */}
+        {/* Arka plan halkası */}
         <circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="hsl(var(--muted))"
+          stroke={trackColor}
           strokeWidth={strokeWidth}
           fill="none"
         />
-        {/* Progress circle */}
+        {/* İlerleme halkası */}
         <circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="currentColor"
+          stroke={progressColor}
           strokeWidth={strokeWidth}
           fill="none"
           strokeDasharray={`${dash} ${circumference}`}
           strokeLinecap="round"
-          className="transition-all duration-500"
+          className="transition-[stroke-dasharray,stroke] duration-500 ease-out"
         />
       </svg>
       {showLabel && (
-        <div className="absolute inset-0 flex items-center justify-center text-xs font-medium text-gray-900">
+        <div className="absolute inset-0 flex items-center justify-center text-xs font-semibold" style={{ color: labelColor }}>
           {p}%
         </div>
       )}

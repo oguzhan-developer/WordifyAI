@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { MiniBars, Donut, EnhancedStatsChart } from "@/components/mini-charts"
+import { Donut, EnhancedStatsChart } from "@/components/mini-charts"
 import AchievementsPanel from "@/components/achievements-panel"
 import DailyProgress from "@/components/daily-progress"
 import GoalsDashboard from "@/components/goals-dashboard"
@@ -14,7 +14,7 @@ import QuickActions from "@/components/quick-actions"
 import { createSupabaseBrowserClient } from "@/lib/supabase/client"
 import { useToast } from "@/hooks/use-toast"
 import { computeListProgress } from "@/lib/progress"
-import { BookOpen, Target, TrendingUp, Star, Sparkles, ArrowRight, Play } from 'lucide-react'
+import { BookOpen, Target, TrendingUp, Star, Sparkles, Play } from 'lucide-react'
 
 type ListRow = { id: string; name: string; created_at: string }
 type Word = { id: string; listId: string; stats: { correct: number; wrong: number; learned: boolean } }
@@ -88,7 +88,7 @@ function StatsOverview({ hasData, weeklyTotal, dailyCounts }: { hasData: boolean
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200 overflow-hidden">
           <CardContent className="p-4 text-center">
             <TrendingUp className="w-8 h-8 text-blue-600 mx-auto mb-2" />
             <div className="text-2xl font-bold text-blue-700">{weeklyTotal}</div>
@@ -96,7 +96,7 @@ function StatsOverview({ hasData, weeklyTotal, dailyCounts }: { hasData: boolean
           </CardContent>
         </Card>
         
-        <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+        <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200 overflow-hidden">
           <CardContent className="p-4 text-center">
             <Star className="w-8 h-8 text-green-600 mx-auto mb-2" />
             <div className="text-2xl font-bold text-green-700">{Math.max(...dailyCounts)}</div>
@@ -104,7 +104,7 @@ function StatsOverview({ hasData, weeklyTotal, dailyCounts }: { hasData: boolean
           </CardContent>
         </Card>
         
-        <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+        <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200 overflow-hidden">
           <CardContent className="p-4 text-center">
             <Sparkles className="w-8 h-8 text-purple-600 mx-auto mb-2" />
             <div className="text-2xl font-bold text-purple-700">{dailyCounts.filter(d => d > 0).length}</div>
@@ -247,7 +247,7 @@ export default function StatsPage() {
   }
 
   return (
-    <div className="space-y-6 py-4">
+    <div className="space-y-6 py-4 px-2 sm:px-0">
       <div className="text-center mb-6">
         <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
           İstatistikler ve İlerleme
@@ -256,7 +256,7 @@ export default function StatsPage() {
       </div>
 
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-4 mb-6">
+        <TabsList className="grid w-full grid-cols-4 mb-6 overflow-x-auto">
           <TabsTrigger value="overview" className="flex items-center gap-2">
             <TrendingUp className="w-4 h-4" />
             <span className="hidden sm:inline">Genel</span>
@@ -324,20 +324,23 @@ export default function StatsPage() {
                     const learnedCount = inList.filter((w: any) => w.stats?.learned).length
                     
                     return (
-                      <Card key={l.id} className="hover:shadow-md transition-shadow border-l-4 border-l-sky-500">
+                      <Card
+                        key={l.id}
+                        className="group hover:shadow-md transition-shadow border overflow-hidden"
+                      >
                         <CardContent className="p-4">
                           <div className="flex items-center gap-4">
-                            <div className="text-sky-600">
-                              <Donut percent={pct} size={60} className="text-sky-600" showLabel={true} />
+                            <div className="shrink-0">
+                              <Donut percent={pct} size={60} />
                             </div>
                             <div className="flex-1 min-w-0">
                               <div className="font-semibold text-gray-900 truncate text-sm">{l.name}</div>
-                              <div className="text-xs text-gray-500 mb-2">{inList.length} kelime</div>
-                              <div className="flex items-center gap-2">
-                                <Badge variant="secondary" className="text-xs">
+                              <div className="text-xs text-gray-500 mb-2 break-words">{inList.length} kelime</div>
+                              <div className="flex flex-wrap items-center gap-2">
+                                <Badge variant="secondary" className="text-xs whitespace-nowrap">
                                   {learnedCount} öğrenildi
                                 </Badge>
-                                <Badge variant="outline" className="text-xs text-sky-600">
+                                <Badge variant="outline" className="text-xs">
                                   %{pct} tamamlandı
                                 </Badge>
                               </div>
