@@ -68,7 +68,7 @@ export default function StatsInsights({
               <div className={`p-2 rounded-lg ${insight.iconBg}`}>
                 <insight.icon className={`w-5 h-5 ${insight.iconColor}`} />
               </div>
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
                   <h4 className="font-semibold text-gray-900">{insight.title}</h4>
                   {insight.badge && (
