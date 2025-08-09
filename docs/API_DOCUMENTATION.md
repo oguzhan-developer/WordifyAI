@@ -294,6 +294,8 @@ Generates personalized learning sessions using AI analysis.
 #### POST /api/ai/pronunciation-check
 Analyzes pronunciation and provides detailed feedback.
 
+**Note:** This endpoint now supports a real speech recognition backend powered by Google Cloud Speech-to-Text. To enable it, set the `USE_REAL_SPEECH_RECOGNITION` environment variable to `true`. Otherwise, it will use a mock service for development and testing.
+
 **Request Body:**
 ```json
 {

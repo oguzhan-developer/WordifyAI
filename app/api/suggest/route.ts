@@ -32,7 +32,7 @@ export async function POST(req: Request) {
       prompt:
         `List ${count} distinct, learner-appropriate English words for CEFR level ${level}.` +
         ' Return JSON only in the schema: {"words": string[]}. Avoid rare/proper nouns. Keep lowercase.',
-      maxTokens: 200,
+      maxOutputTokens: 200,
     })
 
     try {

@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 import { createSupabaseServerClientWithToken } from "@/lib/supabase/server"
-import { createSecureHandler } from "@/lib/api/secure-handler"
+import { createSecureHandler, AuthenticatedRequest } from "@/lib/api/secure-handler"
 import { OptimizedWordQueries } from "@/lib/performance/database-optimizer"
 import { PerformanceMonitor } from "@/lib/performance/caching"
 
-export const GET = createSecureHandler(async (req: NextRequest) => {
+export const GET = createSecureHandler(async (req: AuthenticatedRequest) => {
   const stopTimer = PerformanceMonitor.startTimer('words_api_get')
   
   try {
