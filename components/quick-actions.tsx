@@ -31,25 +31,25 @@ export default function QuickActions({
   })
 
   return (
-    <Card className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 border-blue-200">
+    <Card>
       <CardHeader className="pb-4">
         <CardTitle className="text-lg flex items-center gap-2">
-          <Play className="w-5 h-5 text-blue-600" />
+          <Play className="w-5 h-5 text-primary" />
           Önerilen Adımlar
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         {actions.map((action, index) => (
-          <div key={index} className="flex items-center justify-between p-3 bg-white rounded-lg border hover:shadow-md transition-shadow">
+          <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border hover:bg-muted/100 transition-colors">
             <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-lg ${action.iconBg}`}>
-                <action.icon className={`w-4 h-4 ${action.iconColor}`} />
+              <div className={`p-2 rounded-lg bg-background`}>
+                <action.icon className={`w-4 h-4 text-muted-foreground`} />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="font-medium text-gray-900">{action.title}</span>
+                  <span className="font-medium text-foreground text-sm">{action.title}</span>
                   {action.priority === 'high' && (
-                    <Badge className="bg-red-100 text-red-800 text-xs">
+                    <Badge className="bg-red-500/10 text-red-500 text-xs">
                       Öncelikli
                     </Badge>
                   )}
@@ -59,11 +59,11 @@ export default function QuickActions({
                     </Badge>
                   )}
                 </div>
-                <p className="text-sm text-gray-600 break-words">{action.description}</p>
+                <p className="text-sm text-muted-foreground break-words">{action.description}</p>
               </div>
             </div>
-            <Link href={action.href}>
-              <Button size="sm" className={action.buttonClass}>
+            <Link href={action.href} className="shrink-0 ml-4">
+              <Button size="sm">
                 {action.buttonText}
               </Button>
             </Link>
@@ -71,8 +71,8 @@ export default function QuickActions({
         ))}
         
         {/* Motivational footer */}
-        <div className="mt-4 p-3 bg-gradient-to-r from-purple-100 to-pink-100 rounded-lg text-center">
-          <p className="text-sm text-gray-700">
+        <div className="mt-4 p-3 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-lg text-center">
+          <p className="text-sm text-foreground/80">
             {getMotivationalMessage(weeklyTotal, streak, hasRecentActivity)}
           </p>
         </div>
@@ -104,10 +104,7 @@ function generateActions({
       description: "Kelime öğrenmeye başlamak için bir liste oluştur",
       href: "/app/lists",
       buttonText: "Oluştur",
-      buttonClass: "bg-green-600 hover:bg-green-700 text-white",
       priority: 'high',
-      iconBg: "bg-green-100",
-      iconColor: "text-green-600"
     })
   }
   
@@ -119,10 +116,7 @@ function generateActions({
       description: "Bugün henüz kelime öğrenmedin. Hadi başlayalım!",
       href: "/app/learn",
       buttonText: "Başla",
-      buttonClass: "bg-blue-600 hover:bg-blue-700 text-white",
       priority: 'high',
-      iconBg: "bg-blue-100",
-      iconColor: "text-blue-600"
     })
   }
   
@@ -134,10 +128,7 @@ function generateActions({
       description: "Bu hafta daha fazla kelime öğrenerek hedefini aş",
       href: "/app/learn",
       buttonText: "Öğren",
-      buttonClass: "bg-orange-600 hover:bg-orange-700 text-white",
       priority: 'medium',
-      iconBg: "bg-orange-100",
-      iconColor: "text-orange-600"
     })
   }
   
@@ -149,10 +140,7 @@ function generateActions({
       description: "Her gün biraz çalışarak seri oluştur",
       href: "/app/learn",
       buttonText: "Başla",
-      buttonClass: "bg-purple-600 hover:bg-purple-700 text-white",
       priority: 'medium',
-      iconBg: "bg-purple-100",
-      iconColor: "text-purple-600"
     })
   }
   
@@ -164,10 +152,7 @@ function generateActions({
       description: "Daha önce öğrendiğin kelimeleri tekrar et",
       href: "/app/learn/review",
       buttonText: "Tekrar Et",
-      buttonClass: "bg-indigo-600 hover:bg-indigo-700 text-white",
       priority: 'medium',
-      iconBg: "bg-indigo-100",
-      iconColor: "text-indigo-600"
     })
   }
 
@@ -179,10 +164,7 @@ function generateActions({
       description: "Günlük veya haftalık hedeflerini ayarla",
       href: "/app/stats?tab=goals",
       buttonText: "Ayarla",
-      buttonClass: "bg-teal-600 hover:bg-teal-700 text-white",
       priority: 'low',
-      iconBg: "bg-teal-100",
-      iconColor: "text-teal-600"
     })
   }
 

@@ -41,16 +41,16 @@ export default function StatsInsights({
 
   if (!hasAnyActivity) {
     return (
-      <Card className="bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200">
+      <Card className="bg-muted/40 border-dashed">
         <CardContent className="p-6 text-center">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center mx-auto mb-4 shadow-lg">
             <Zap className="w-8 h-8 text-white" />
           </div>
-          <h3 className="text-lg font-bold text-gray-900 mb-2">Harika bir başlangıç için hazır mısın?</h3>
-          <p className="text-gray-600 text-sm mb-4">
+          <h3 className="text-lg font-bold text-foreground mb-2">Harika bir başlangıç için hazır mısın?</h3>
+          <p className="text-muted-foreground text-sm mb-4">
             İlk kelimeni öğrendiğinde burada kişiselleştirilmiş istatistikler ve motivasyon mesajları göreceksin!
           </p>
-          <div className="flex items-center justify-center gap-2 text-xs text-indigo-600">
+          <div className="flex items-center justify-center gap-2 text-xs text-secondary-foreground">
             <Star className="w-4 h-4" />
             <span>Öğrenme yolculuğun başlamak üzere</span>
           </div>
@@ -60,26 +60,26 @@ export default function StatsInsights({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {insights.map((insight, index) => (
-        <Card key={index} className={`${insight.bgClass} ${insight.borderClass} hover:shadow-md transition-shadow`}>
+        <Card key={index} className="bg-card border-border hover:bg-muted/50 transition-colors">
           <CardContent className="p-4">
-            <div className="flex items-start gap-3">
-              <div className={`p-2 rounded-lg ${insight.iconBg}`}>
-                <insight.icon className={`w-5 h-5 ${insight.iconColor}`} />
+            <div className="flex items-start gap-4">
+              <div className={`p-2 rounded-lg bg-muted`}>
+                <insight.icon className={`w-5 h-5 text-muted-foreground`} />
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <h4 className="font-semibold text-gray-900">{insight.title}</h4>
+              <div className="flex-1 min-w-0 space-y-1">
+                <div className="flex items-center gap-2">
+                  <h4 className="font-semibold text-foreground text-sm">{insight.title}</h4>
                   {insight.badge && (
-                    <Badge variant="secondary" className={insight.badgeClass}>
+                    <Badge variant="secondary" className="text-xs">
                       {insight.badge}
                     </Badge>
                   )}
                 </div>
-                <p className="text-sm text-gray-600">{insight.description}</p>
+                <p className="text-sm text-muted-foreground">{insight.description}</p>
                 {insight.tip && (
-                  <p className="text-xs text-gray-500 mt-2 italic">💡 {insight.tip}</p>
+                  <p className="text-xs text-muted-foreground/80 mt-2 italic">💡 {insight.tip}</p>
                 )}
               </div>
             </div>
@@ -131,11 +131,6 @@ function generateInsights({
         title: "Muhteşem Hafta!",
         description: `Bu hafta ${weeklyTotal} kelime öğrendin. Bu harika bir performans!`,
         badge: "Süper",
-        bgClass: "bg-gradient-to-br from-green-50 to-emerald-50",
-        borderClass: "border-green-200",
-        iconBg: "bg-green-100",
-        iconColor: "text-green-600",
-        badgeClass: "bg-green-100 text-green-800",
         tip: "Bu tempoyu korumaya devam et!"
       })
     } else if (weeklyTotal >= 10) {
@@ -144,11 +139,6 @@ function generateInsights({
         title: "İyi Bir Hafta",
         description: `${weeklyTotal} kelime öğrenerek güzel bir ilerleme kaydettiniz.`,
         badge: "İyi",
-        bgClass: "bg-gradient-to-br from-blue-50 to-cyan-50",
-        borderClass: "border-blue-200",
-        iconBg: "bg-blue-100",
-        iconColor: "text-blue-600",
-        badgeClass: "bg-blue-100 text-blue-800",
         tip: "Günlük hedefi biraz artırabilirsin!"
       })
     } else {
@@ -157,11 +147,6 @@ function generateInsights({
         title: "Başlangıç Yapıldı",
         description: `${weeklyTotal} kelime ile başlangıç yaptın. Her adım önemli!`,
         badge: "Başlangıç",
-        bgClass: "bg-gradient-to-br from-yellow-50 to-orange-50",
-        borderClass: "border-yellow-200",
-        iconBg: "bg-yellow-100",
-        iconColor: "text-yellow-600",
-        badgeClass: "bg-yellow-100 text-yellow-800",
         tip: "Düzenli çalışma en önemli faktör."
       })
     }
@@ -175,11 +160,6 @@ function generateInsights({
         title: "Süper Tutarlılık",
         description: `7 günün ${activeDays}'inde aktiftin. %${consistency} tutarlılık oranı!`,
         badge: "Tutarlı",
-        bgClass: "bg-gradient-to-br from-purple-50 to-pink-50",
-        borderClass: "border-purple-200",
-        iconBg: "bg-purple-100",
-        iconColor: "text-purple-600",
-        badgeClass: "bg-purple-100 text-purple-800",
         tip: "Bu tutarlılık seni başarıya götürecek!"
       })
     } else if (consistency >= 50) {
@@ -188,11 +168,6 @@ function generateInsights({
         title: "Gelişen Tutarlılık",
         description: `${activeDays} gün aktiftin. Tutarlılığını artırmaya devam et.`,
         badge: "Gelişiyor",
-        bgClass: "bg-gradient-to-br from-indigo-50 to-blue-50",
-        borderClass: "border-indigo-200",
-        iconBg: "bg-indigo-100",
-        iconColor: "text-indigo-600",
-        badgeClass: "bg-indigo-100 text-indigo-800",
         tip: "Her gün biraz çalışmak büyük fark yaratır."
       })
     }
@@ -205,11 +180,6 @@ function generateInsights({
       title: "En İyi Gün Rekoru",
       description: `Tek günde ${bestDay} kelime öğrenerek kişisel rekoru kırdın!`,
       badge: "Rekor",
-      bgClass: "bg-gradient-to-br from-orange-50 to-red-50",
-      borderClass: "border-orange-200",
-      iconBg: "bg-orange-100",
-      iconColor: "text-orange-600",
-      badgeClass: "bg-orange-100 text-orange-800",
       tip: "Bu enerjini sürdürmeye çalış!"
     })
   }
@@ -221,11 +191,6 @@ function generateInsights({
       title: `${streak} Günlük Seri`,
       description: `Art arda ${streak} gün öğrenme yaparak harika bir seri oluşturdun!`,
       badge: "Seri",
-      bgClass: "bg-gradient-to-br from-teal-50 to-green-50",
-      borderClass: "border-teal-200",
-      iconBg: "bg-teal-100",
-      iconColor: "text-teal-600",
-      badgeClass: "bg-teal-100 text-teal-800",
       tip: "Seriyi bozmamaya odaklan!"
     })
   }
@@ -236,10 +201,6 @@ function generateInsights({
       icon: Brain,
       title: "Günlük Ortalama",
       description: `Aktif olduğun günlerde ortalama ${averageDaily} kelime öğreniyorsun.`,
-      bgClass: "bg-gradient-to-br from-gray-50 to-slate-50",
-      borderClass: "border-gray-200",
-      iconBg: "bg-gray-100",
-      iconColor: "text-gray-600",
       tip: averageDaily < 3 ? "Günlük hedefi biraz artırabilirsin." : "Harika bir ortalama!"
     })
   }
