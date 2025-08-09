@@ -79,7 +79,7 @@ function StatsOverview({ hasData, weeklyTotal, dailyCounts }: { hasData: boolean
                 <Icon className={`w-6 h-6 ${color}`} />
               </div>
               <div>
-                <div className="text-2xl font-bold text-foreground">{value}</div>
+                <div className="text-xl sm:text-2xl font-bold text-foreground">{value}</div>
                 <div className="text-sm text-muted-foreground">{label}</div>
               </div>
             </CardContent>
@@ -230,22 +230,22 @@ export default function StatsPage() {
       </div>
 
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-4 mb-6 overflow-x-auto">
-          <TabsTrigger value="overview" className="flex items-center gap-2">
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 mb-6">
+          <TabsTrigger value="overview" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2">
             <TrendingUp className="w-4 h-4" />
-            <span className="hidden sm:inline">Genel</span>
+            <span className="text-xs sm:text-sm">Genel</span>
           </TabsTrigger>
-          <TabsTrigger value="goals" className="flex items-center gap-2">
+          <TabsTrigger value="goals" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2">
             <Target className="w-4 h-4" />
-            <span className="hidden sm:inline">Hedefler</span>
+            <span className="text-xs sm:text-sm">Hedefler</span>
           </TabsTrigger>
-          <TabsTrigger value="progress" className="flex items-center gap-2">
+          <TabsTrigger value="progress" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2">
             <BookOpen className="w-4 h-4" />
-            <span className="hidden sm:inline">İlerleme</span>
+            <span className="text-xs sm:text-sm">İlerleme</span>
           </TabsTrigger>
-          <TabsTrigger value="achievements" className="flex items-center gap-2">
+          <TabsTrigger value="achievements" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2">
             <Star className="w-4 h-4" />
-            <span className="hidden sm:inline">Ödüller</span>
+            <span className="text-xs sm:text-sm">Ödüller</span>
           </TabsTrigger>
         </TabsList>
 
@@ -308,8 +308,8 @@ export default function StatsPage() {
                               <Donut percent={pct} size={50} />
                             </div>
                             <div className="flex-1 min-w-0 space-y-1.5">
-                              <p className="font-semibold text-foreground truncate text-sm">{l.name}</p>
-                              <div className="text-xs text-muted-foreground">{inList.length} kelime</div>
+                              <p className="font-semibold text-foreground truncate text-sm break-words">{l.name}</p>
+                              <div className="text-xs text-muted-foreground break-words">{inList.length} kelime</div>
                               <div className="flex flex-wrap items-center gap-2 min-w-0">
                                 <Badge variant="secondary" className="text-xs whitespace-nowrap">
                                   {learnedCount} öğrenildi
