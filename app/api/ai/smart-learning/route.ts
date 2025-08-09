@@ -6,8 +6,8 @@
  * of user performance, learning patterns, and spaced repetition algorithms.
  */
 
-import { NextRequest, NextResponse } from 'next/server'
-import { createSecureHandler } from '@/lib/api/secure-handler'
+import { NextResponse } from 'next/server'
+import { createSecureHandler, AuthenticatedRequest } from '@/lib/api/secure-handler'
 import { withValidation } from '@/lib/api/secure-handler'
 import { OptimizedWordQueries, OptimizedReviewQueries } from '@/lib/performance/database-optimizer'
 import { withCache, PerformanceMonitor } from '@/lib/performance/caching'
@@ -326,7 +326,7 @@ class SmartSessionBuilder {
 }
 
 export const POST = createSecureHandler(
-  withValidation(smartLearningRequestSchema, async (req: NextRequest, validatedData: any) => {
+  withValidation(smartLearningRequestSchema, async (req: AuthenticatedRequest, validatedData: any) => {
     const stopTimer = PerformanceMonitor.startTimer('smart_learning_recommendations')
     
     try {

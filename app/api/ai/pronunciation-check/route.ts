@@ -6,8 +6,8 @@
  * and provides detailed feedback for pronunciation improvement.
  */
 
-import { NextRequest, NextResponse } from 'next/server'
-import { createSecureHandler } from '@/lib/api/secure-handler'
+import { NextResponse } from 'next/server'
+import { createSecureHandler, AuthenticatedRequest } from '@/lib/api/secure-handler'
 import { withValidation } from '@/lib/api/secure-handler'
 import { PerformanceMonitor, withCache } from '@/lib/performance/caching'
 import { z } from 'zod'
@@ -51,7 +51,7 @@ interface PronunciationAnalysis {
  * Phoneme Analysis Engine
  */
 class PhonemeAnalyzer {
-  private static readonly PHONEME_MAP = {
+  public static readonly PHONEME_MAP = {
     // Vowels
     'i:': { ipa: 'iː', examples: ['see', 'tree', 'key'], difficulty: 'easy' },
     'ɪ': { ipa: 'ɪ', examples: ['sit', 'big', 'fish'], difficulty: 'easy' },
@@ -185,7 +185,7 @@ class PhonemeAnalyzer {
   }
 
   private static generatePhonemeFeedback(expected: string, actual: string): string {
-    const phonemeInfo = this.PHONEME_MAP[expected]
+    const phonemeInfo = this.PHONEME_MAP[expected as keyof typeof this.PHONEME_MAP]
     if (!phonemeInfo) return 'Practice this sound more.'
     
     const tips = [
@@ -202,7 +202,10 @@ class PhonemeAnalyzer {
  * Pronunciation Feedback Generator
  */
 class PronunciationFeedbackGenerator {
-  static generateFeedback(analysis: any, overallScore: number): {
+  static generateFeedback(
+    analysis: { phoneme_scores: Array<{ phoneme: string; score: number; feedback: string }> },
+    overallScore: number
+  ): {
     strengths: string[]
     improvements: string[]
     specific_tips: string[]
@@ -226,11 +229,11 @@ class PronunciationFeedbackGenerator {
     }
 
     // Analyze specific phoneme issues
-    const problemPhonemes = analysis.phoneme_scores.filter((p: any) => p.score < 70)
+    const problemPhonemes = analysis.phoneme_scores.filter((p) => p.score < 70)
     if (problemPhonemes.length > 0) {
-      improvements.push(`Work on these sounds: ${problemPhonemes.map((p: any) => p.phoneme).join(', ')}`)
+      improvements.push(`Work on these sounds: ${problemPhonemes.map((p) => p.phoneme).join(', ')}`)
       
-      problemPhonemes.forEach((p: any) => {
+      problemPhonemes.forEach((p) => {
         specific_tips.push(p.feedback)
       })
     }
@@ -245,7 +248,10 @@ class PronunciationFeedbackGenerator {
     return { strengths, improvements, specific_tips }
   }
 
-  static generatePracticeSuggestions(word: string, analysis: any): Array<{
+  static generatePracticeSuggestions(
+    word: string,
+    analysis: { phoneme_scores: Array<{ phoneme: string; score: number; feedback: string }> }
+  ): Array<{
     type: 'phoneme' | 'word' | 'sentence'
     content: string
     difficulty: 'easy' | 'medium' | 'hard'
@@ -253,12 +259,12 @@ class PronunciationFeedbackGenerator {
     const suggestions = []
     
     // Phoneme-level practice
-    const problemPhonemes = analysis.phoneme_scores.filter((p: any) => p.score < 70)
-    problemPhonemes.forEach((p: any) => {
+    const problemPhonemes = analysis.phoneme_scores.filter((p) => p.score < 70)
+    problemPhonemes.forEach((p) => {
       suggestions.push({
         type: 'phoneme' as const,
-        content: `Practice the /${p.phoneme}/ sound: ${PhonemeAnalyzer['PHONEME_MAP'][p.phoneme]?.examples?.join(', ') || 'repeat slowly'}`,
-        difficulty: PhonemeAnalyzer['PHONEME_MAP'][p.phoneme]?.difficulty || 'medium' as const
+        content: `Practice the /${p.phoneme}/ sound: ${PhonemeAnalyzer.PHONEME_MAP[p.phoneme as keyof typeof PhonemeAnalyzer.PHONEME_MAP]?.examples?.join(', ') || 'repeat slowly'}`,
+        difficulty: PhonemeAnalyzer.PHONEME_MAP[p.phoneme as keyof typeof PhonemeAnalyzer.PHONEME_MAP]?.difficulty || 'medium' as const
       })
     })
 
@@ -285,6 +291,63 @@ class PronunciationFeedbackGenerator {
     return suggestions
   }
 }
+
+/**
+ * Real Speech Recognition using Google Cloud Speech-to-Text API
+ */
+class GoogleSpeechRecognition {
+  private static readonly API_URL = `https://speech.googleapis.com/v1/speech:recognize?key=${process.env.GOOGLE_GENERATIVE_AI_API_KEY}`
+
+  static async analyzeAudio(audioData: string, language: string): Promise<{
+    recognizedText: string
+    confidence: number
+    audioQuality: number // Placeholder, not provided by this API
+  }> {
+    try {
+      const response = await fetch(this.API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          config: {
+            encoding: 'LINEAR16', // Assuming frontend sends this format
+            sampleRateHertz: 16000, // Common sample rate
+            languageCode: language,
+            enableAutomaticPunctuation: true,
+          },
+          audio: {
+            content: audioData, // Already base64 encoded
+          },
+        }),
+      })
+
+      if (!response.ok) {
+        const errorBody = await response.text()
+        console.error('Google Speech-to-Text API Error:', response.status, errorBody)
+        throw new Error(`Google Speech-to-Text API request failed with status ${response.status}`)
+      }
+
+      const data = await response.json()
+      const result = data.results?.[0]?.alternatives?.[0]
+
+      if (!result) {
+        return { recognizedText: '', confidence: 0, audioQuality: 0.8 }
+      }
+
+      return {
+        recognizedText: result.transcript || '',
+        confidence: result.confidence || 0,
+        audioQuality: 0.8, // This is a placeholder, as the API doesn't provide a simple quality score
+      }
+    } catch (error) {
+      console.error('Error calling Google Speech-to-Text API:', error)
+      // Fallback to empty result in case of error
+      return { recognizedText: '', confidence: 0, audioQuality: 0.5 }
+    }
+  }
+}
+
 
 /**
  * Mock Speech Recognition (In production, use real speech recognition API)
@@ -316,7 +379,7 @@ class MockSpeechRecognition {
 }
 
 export const POST = createSecureHandler(
-  withValidation(pronunciationCheckSchema, async (req: NextRequest, validatedData: any) => {
+  withValidation(pronunciationCheckSchema, async (req: AuthenticatedRequest, validatedData: any) => {
     const stopTimer = PerformanceMonitor.startTimer('pronunciation_check')
     
     try {
@@ -327,8 +390,30 @@ export const POST = createSecureHandler(
       const cacheKey = `pronunciation:${user.id}:${wordId}:${expectedText.toLowerCase()}`
       
       const analysis = await withCache('ai_responses', cacheKey, async () => {
-        // Analyze the audio (mock implementation)
-        const speechResult = await MockSpeechRecognition.analyzeAudio(audioData, expectedText)
+        const useRealApi = process.env.USE_REAL_SPEECH_RECOGNITION === 'true'
+
+        const speechResult = useRealApi
+          ? await GoogleSpeechRecognition.analyzeAudio(audioData, language)
+          : await MockSpeechRecognition.analyzeAudio(audioData, expectedText)
+
+        // If speech recognition fails completely, return a zero-score analysis
+        if (speechResult.confidence === 0) {
+          return {
+            overall_score: 0,
+            phoneme_scores: [],
+            fluency_score: 0,
+            accuracy_score: 0,
+            completeness_score: 0,
+            prosody_score: 0,
+            feedback: {
+              strengths: [],
+              improvements: ['Speech recognition failed. Please try again.'],
+              specific_tips: [],
+            },
+            similar_words: [],
+            practice_suggestions: [],
+          }
+        }
         
         // Analyze phonemes
         const phonemeScores = PhonemeAnalyzer.analyzePhonemes(expectedText, speechResult.recognizedText)
@@ -350,7 +435,7 @@ export const POST = createSecureHandler(
         const practiceSuggestions = PronunciationFeedbackGenerator.generatePracticeSuggestions(expectedText, { phoneme_scores: phonemeScores })
         
         // Find similar words for practice
-        const similarWords = this.findSimilarWords(expectedText, phonemeScores)
+        const similarWords = findSimilarWords(expectedText, phonemeScores)
         
         const result: PronunciationAnalysis = {
           overall_score: overallScore,

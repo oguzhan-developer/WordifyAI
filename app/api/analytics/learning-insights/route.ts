@@ -6,8 +6,8 @@
  * and personalized insights using advanced data analysis techniques.
  */
 
-import { NextRequest, NextResponse } from 'next/server'
-import { createSecureHandler } from '@/lib/api/secure-handler'
+import { NextResponse } from 'next/server'
+import { createSecureHandler, AuthenticatedRequest } from '@/lib/api/secure-handler'
 import { OptimizedWordQueries, OptimizedReviewQueries } from '@/lib/performance/database-optimizer'
 import { withCache, PerformanceMonitor } from '@/lib/performance/caching'
 import { createSupabaseServerClientWithToken } from '@/lib/supabase/server'
@@ -172,8 +172,8 @@ class AdvancedAnalyticsEngine {
   }
 
   private static generateRecommendations(patterns: any, overview: any, predictions: any) {
-    const focusAreas = []
-    const studySchedule = []
+    const focusAreas: { area: string; priority: number; reason: string }[] = []
+    const studySchedule: { time: string; duration: number; focus: string }[] = []
     let difficultyAdjustment: 'increase' | 'decrease' | 'maintain' = 'maintain'
     
     // Analyze focus areas
@@ -428,7 +428,7 @@ class AdvancedAnalyticsEngine {
   }
 }
 
-export const GET = createSecureHandler(async (req: NextRequest) => {
+export const GET = createSecureHandler(async (req: AuthenticatedRequest) => {
   const stopTimer = PerformanceMonitor.startTimer('learning_insights')
   
   try {
