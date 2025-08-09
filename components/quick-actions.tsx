@@ -45,7 +45,7 @@ export default function QuickActions({
               <div className={`p-2 rounded-lg ${action.iconBg}`}>
                 <action.icon className={`w-4 h-4 ${action.iconColor}`} />
               </div>
-              <div>
+              <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <span className="font-medium text-gray-900">{action.title}</span>
                   {action.priority === 'high' && (
@@ -59,7 +59,7 @@ export default function QuickActions({
                     </Badge>
                   )}
                 </div>
-                <p className="text-sm text-gray-600">{action.description}</p>
+                <p className="text-sm text-gray-600 break-words">{action.description}</p>
               </div>
             </div>
             <Link href={action.href}>

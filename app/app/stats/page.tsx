@@ -335,8 +335,8 @@ export default function StatsPage() {
                             </div>
                             <div className="flex-1 min-w-0">
                               <div className="font-semibold text-gray-900 truncate text-sm">{l.name}</div>
-                              <div className="text-xs text-gray-500 mb-2 break-words">{inList.length} kelime</div>
-                              <div className="flex flex-wrap items-center gap-2">
+                              <div className="text-xs text-gray-500 mb-2 break-all">{inList.length} kelime</div>
+                              <div className="flex flex-wrap items-center gap-2 min-w-0">
                                 <Badge variant="secondary" className="text-xs whitespace-nowrap">
                                   {learnedCount} öğrenildi
                                 </Badge>
