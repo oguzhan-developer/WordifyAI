@@ -35,6 +35,7 @@ type Review = {
 type User = {
   name: string
   email: string
+  avatar?: string
 }
 
 type Preferences = {
