@@ -24,54 +24,32 @@ type Review = { id: string; word_id: string; correct: boolean; reviewed_at: stri
 function NewUserWelcome({ type }: { type: 'learning' | 'lists' }) {
   const configs = {
     learning: {
-      emoji: '🚀',
+      icon: TrendingUp,
       title: 'Öğrenme yolculuğun başlasın!',
-      subtitle: 'İlk kelimeni öğrendiğinde burada güzel istatistikler göreceksin',
-      tips: [
-        'Günlük hedeflerini belirle',
-        'Düzenli tekrar yap',
-        'İlerlemeni takip et'
-      ],
+      subtitle: 'İlk kelimeni öğrendiğinde burada güzel istatistikler göreceksin.',
       buttonText: 'İlk Kelimeni Öğren',
-      gradient: 'from-blue-500 to-purple-600'
     },
     lists: {
-      emoji: '📚',
+      icon: BookOpen,
       title: 'İlk liste zamanı!',
-      subtitle: 'Kelime listelerin oluşturduğunda ilerleme grafiklerin burada görünecek',
-      tips: [
-        'Konulara göre listeler oluştur',
-        'Günlük pratik yap',
-        'İlerlemeni izle'
-      ],
+      subtitle: 'Kelime listelerin oluşturduğunda ilerleme grafiklerin burada görünecek.',
       buttonText: 'İlk Listeni Oluştur',
-      gradient: 'from-green-500 to-blue-500'
     }
   }
   
   const config = configs[type]
+  const Icon = config.icon
   
   return (
-    <div className="flex flex-col items-center justify-center py-12 px-6">
-      <div className={`w-20 h-20 rounded-full bg-gradient-to-br ${config.gradient} flex items-center justify-center mb-6 shadow-lg`}>
-        <span className="text-3xl">{config.emoji}</span>
+    <div className="text-center p-8 bg-muted/40 rounded-xl border-dashed border">
+      <div className={`w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center mx-auto mb-4 shadow-lg`}>
+        <Icon className="w-8 h-8 text-white" />
       </div>
       
-      <h3 className="text-xl font-bold text-gray-900 mb-3 text-center">{config.title}</h3>
-      <p className="text-gray-600 text-center text-sm mb-6 max-w-md">{config.subtitle}</p>
+      <h3 className="text-lg font-bold text-foreground mb-2">{config.title}</h3>
+      <p className="text-muted-foreground text-sm mb-6 max-w-md mx-auto">{config.subtitle}</p>
       
-      <div className="space-y-3 mb-8">
-        {config.tips.map((tip, index) => (
-          <div key={index} className="flex items-center gap-3 text-sm text-gray-700">
-            <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
-              <span className="text-green-600 text-xs">✓</span>
-            </div>
-            <span>{tip}</span>
-          </div>
-        ))}
-      </div>
-      
-      <Button className={`bg-gradient-to-r ${config.gradient} hover:opacity-90 text-white shadow-lg`}>
+      <Button>
         <Play className="w-4 h-4 mr-2" />
         {config.buttonText}
       </Button>
@@ -85,45 +63,41 @@ function StatsOverview({ hasData, weeklyTotal, dailyCounts }: { hasData: boolean
     return <NewUserWelcome type="learning" />
   }
   
+  const statCards = [
+    { icon: TrendingUp, label: "Bu hafta öğrenilen", value: weeklyTotal, color: "text-blue-500" },
+    { icon: Star, label: "En iyi gün", value: Math.max(...dailyCounts), color: "text-green-500" },
+    { icon: Sparkles, label: "Aktif gün", value: dailyCounts.filter(d => d > 0).length, color: "text-purple-500" },
+  ]
+
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200 overflow-hidden">
-          <CardContent className="p-4 text-center">
-            <TrendingUp className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-            <div className="text-2xl font-bold text-blue-700">{weeklyTotal}</div>
-            <div className="text-sm text-blue-600">Bu hafta öğrenilen</div>
-          </CardContent>
-        </Card>
-        
-        <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200 overflow-hidden">
-          <CardContent className="p-4 text-center">
-            <Star className="w-8 h-8 text-green-600 mx-auto mb-2" />
-            <div className="text-2xl font-bold text-green-700">{Math.max(...dailyCounts)}</div>
-            <div className="text-sm text-green-600">En iyi gün</div>
-          </CardContent>
-        </Card>
-        
-        <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200 overflow-hidden">
-          <CardContent className="p-4 text-center">
-            <Sparkles className="w-8 h-8 text-purple-600 mx-auto mb-2" />
-            <div className="text-2xl font-bold text-purple-700">{dailyCounts.filter(d => d > 0).length}</div>
-            <div className="text-sm text-purple-600">Aktif gün</div>
-          </CardContent>
-        </Card>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {statCards.map(({ icon: Icon, label, value, color }) => (
+          <Card key={label}>
+            <CardContent className="flex items-center gap-4 p-4">
+              <div className="p-3 rounded-lg bg-muted">
+                <Icon className={`w-6 h-6 ${color}`} />
+              </div>
+              <div>
+                <div className="text-xl sm:text-2xl font-bold text-foreground">{value}</div>
+                <div className="text-sm text-muted-foreground">{label}</div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
       
       <Card>
         <CardHeader className="pb-4">
           <CardTitle className="text-lg flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-blue-600" />
+            <TrendingUp className="w-5 h-5 text-primary" />
             7 Günlük İlerleme
           </CardTitle>
         </CardHeader>
         <CardContent>
           <EnhancedStatsChart values={dailyCounts} labels={["6 gün önce", "5 gün önce", "4 gün önce", "3 gün önce", "2 gün önce", "Dün", "Bugün"]} />
-          <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-            <p className="text-sm text-blue-800">
+          <div className="mt-4 p-3 bg-muted/50 rounded-lg">
+            <p className="text-sm text-foreground/80">
               <span className="font-semibold">Harika ilerleme!</span> Bu hafta toplam <span className="font-bold">{weeklyTotal}</span> kelime öğrendin.
             </p>
           </div>
@@ -256,22 +230,22 @@ export default function StatsPage() {
       </div>
 
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-4 mb-6 overflow-x-auto">
-          <TabsTrigger value="overview" className="flex items-center gap-2">
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 mb-6">
+          <TabsTrigger value="overview" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2">
             <TrendingUp className="w-4 h-4" />
-            <span className="hidden sm:inline">Genel</span>
+            <span className="text-xs sm:text-sm">Genel</span>
           </TabsTrigger>
-          <TabsTrigger value="goals" className="flex items-center gap-2">
+          <TabsTrigger value="goals" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2">
             <Target className="w-4 h-4" />
-            <span className="hidden sm:inline">Hedefler</span>
+            <span className="text-xs sm:text-sm">Hedefler</span>
           </TabsTrigger>
-          <TabsTrigger value="progress" className="flex items-center gap-2">
+          <TabsTrigger value="progress" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2">
             <BookOpen className="w-4 h-4" />
-            <span className="hidden sm:inline">İlerleme</span>
+            <span className="text-xs sm:text-sm">İlerleme</span>
           </TabsTrigger>
-          <TabsTrigger value="achievements" className="flex items-center gap-2">
+          <TabsTrigger value="achievements" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2">
             <Star className="w-4 h-4" />
-            <span className="hidden sm:inline">Ödüller</span>
+            <span className="text-xs sm:text-sm">Ödüller</span>
           </TabsTrigger>
         </TabsList>
 
@@ -291,7 +265,7 @@ export default function StatsPage() {
           <Card>
             <CardHeader className="pb-4">
               <CardTitle className="text-lg flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-purple-600" />
+                <Sparkles className="w-5 h-5 text-primary" />
                 Kişisel İçgörüler
               </CardTitle>
             </CardHeader>
@@ -309,7 +283,7 @@ export default function StatsPage() {
           <Card>
             <CardHeader className="pb-4">
               <CardTitle className="text-lg flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-green-600" />
+                <BookOpen className="w-5 h-5 text-primary" />
                 Listelere Göre İlerleme
               </CardTitle>
             </CardHeader>
@@ -326,16 +300,16 @@ export default function StatsPage() {
                     return (
                       <Card
                         key={l.id}
-                        className="group hover:shadow-md transition-shadow border overflow-hidden"
+                        className="group hover:bg-muted/50 transition-colors"
                       >
                         <CardContent className="p-4">
-                          <div className="flex items-center gap-4">
+                          <div className="flex items-start gap-4">
                             <div className="shrink-0">
-                              <Donut percent={pct} size={60} />
+                              <Donut percent={pct} size={50} />
                             </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="font-semibold text-gray-900 truncate text-sm">{l.name}</div>
-                              <div className="text-xs text-gray-500 mb-2 break-all">{inList.length} kelime</div>
+                            <div className="flex-1 min-w-0 space-y-1.5">
+                              <p className="font-semibold text-foreground truncate text-sm break-words">{l.name}</p>
+                              <div className="text-xs text-muted-foreground break-words">{inList.length} kelime</div>
                               <div className="flex flex-wrap items-center gap-2 min-w-0">
                                 <Badge variant="secondary" className="text-xs whitespace-nowrap">
                                   {learnedCount} öğrenildi
