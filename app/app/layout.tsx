@@ -25,6 +25,7 @@ export default function AppLayout({ children }: PropsWithChildren) {
         const avatar = data.user?.user_metadata?.avatar || ""
         setUser({ name, email: data.user.email || "", avatar })
       }
+
     })()
   }, []) // eslint-disable-line
 
@@ -45,6 +46,7 @@ export default function AppLayout({ children }: PropsWithChildren) {
             </Avatar>
             <div>
               <span className="font-medium">{user?.name || "Kullanıcı"}</span>
+
               <div className="text-xs text-muted-foreground">WordifyAI</div>
             </div>
           </div>

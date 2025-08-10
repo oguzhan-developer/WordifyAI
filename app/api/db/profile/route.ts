@@ -13,6 +13,7 @@ export async function POST(req: Request) {
 
     if (userErr || !user) {
       return NextResponse.json({ error: "not-authenticated", details: userErr?.message }, { status: 401 })
+
     }
 
     const body = await req.json()
@@ -32,6 +33,7 @@ export async function POST(req: Request) {
       .update(updateData)
       .eq("id", user.id)
 
+
     if (profileError) {
       return NextResponse.json({ error: "profile-update-failed", details: profileError.message }, { status: 400 })
     }
@@ -44,6 +46,7 @@ export async function POST(req: Request) {
 
     if (authUserError) {
       return NextResponse.json({ error: "user-update-failed", details: authUserError.message }, { status: 400 })
+
     }
 
     return NextResponse.json({ success: true })
