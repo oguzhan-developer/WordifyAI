@@ -3,16 +3,17 @@ import { createSupabaseServerClientAdmin } from "@/lib/supabase/server"
 
 export async function POST(req: Request) {
   try {
-    const supabase = createSupabaseServerClientAdmin()
-    // We are using the admin client, but we still need to get the user's session to know whose profile to update.
-    // This is a simplified approach. A more robust solution would be to use the user's access token
-    // to create a client that respects RLS policies.
-    const {
-      data: { session },
-    } = await supabase.auth.getSession()
-
-    if (!session) {
+    const token = req.headers.get("authorization")?.replace("Bearer ", "")
+    if (!token) {
       return NextResponse.json({ error: "not-authenticated" }, { status: 401 })
+    }
+
+    const supabase = createSupabaseServerClientAdmin()
+    const { data: { user }, error: userErr } = await supabase.auth.getUser(token)
+
+    if (userErr || !user) {
+      return NextResponse.json({ error: "not-authenticated", details: userErr?.message }, { status: 401 })
+
     }
 
     const body = await req.json()
@@ -30,19 +31,22 @@ export async function POST(req: Request) {
     const { error: profileError } = await supabase
       .from("profiles")
       .update(updateData)
-      .eq("id", session.user.id)
+      .eq("id", user.id)
+
 
     if (profileError) {
       return NextResponse.json({ error: "profile-update-failed", details: profileError.message }, { status: 400 })
     }
 
     // Also update the user_metadata on the Auth user
-    const { error: userError } = await supabase.auth.updateUser({
-      data: updateData,
-    })
+    const { error: authUserError } = await supabase.auth.admin.updateUserById(
+      user.id,
+      { user_metadata: updateData }
+    )
 
-    if (userError) {
-      return NextResponse.json({ error: "user-update-failed", details: userError.message }, { status: 400 })
+    if (authUserError) {
+      return NextResponse.json({ error: "user-update-failed", details: authUserError.message }, { status: 400 })
+
     }
 
     return NextResponse.json({ success: true })

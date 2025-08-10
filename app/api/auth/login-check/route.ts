@@ -91,7 +91,22 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const ok = await bcrypt.compare(password, data.password_hash || "")
+    if (!data.password_hash) {
+      await SecurityAuditLog.logEvent({
+        type: 'failed_auth',
+        userId: data.id,
+        email,
+        ip: clientIP,
+        userAgent,
+        details: { reason: 'missing_hash' }
+      })
+      return NextResponse.json(
+        { error: "password-invalid" },
+        { status: 401, headers: response.headers }
+      )
+    }
+
+    const ok = await bcrypt.compare(password, data.password_hash)
     if (!ok) {
       await SecurityAuditLog.logEvent({
         type: 'failed_auth',
