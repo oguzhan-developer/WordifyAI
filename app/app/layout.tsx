@@ -36,9 +36,19 @@ export default function AppLayout({ children }: PropsWithChildren) {
   }
 
   return (
-    <div className="min-h-svh flex flex-col">
-      <header className="sticky top-0 z-10 bg-white/75 backdrop-blur border-b">
-        <div className="mx-auto max-w-md px-4 py-3 flex items-center justify-between">
+    <div
+      className="min-h-screen flex flex-col w-full mx-auto"
+      style={{ maxWidth: '428px' }}
+    >
+      <header className="sticky top-0 z-10 p-4"
+        style={{
+          background: 'rgba(255, 255, 255, 0.1)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
+        }}
+      >
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-sm">
             <Avatar className="w-8 h-8">
               <AvatarImage src={user?.avatar} />
@@ -55,7 +65,7 @@ export default function AppLayout({ children }: PropsWithChildren) {
           </Button>
         </div>
       </header>
-      <main className="flex-1 mx-auto w-full max-w-md px-4 pb-24">{children}</main>
+      <main className="flex-1 w-full p-5 pb-24">{children}</main>
       <BottomNav activePath={path || "/app"} />
       <Toaster />
     </div>

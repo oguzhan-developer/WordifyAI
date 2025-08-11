@@ -401,7 +401,7 @@ function AddWordPageContent() {
                 <Label>Zorluk düzeyi</Label>
                 <div className="flex flex-wrap gap-2">
                   {(["A1","A2","B1","B2","C1"] as Level[]).map((lv) => (
-                    <Button key={lv} variant={level === lv ? "default" : "outline"} onClick={() => setLevel(lv)}>{lv}</Button>
+                    <Button key={lv} variant={level === lv ? "primary" : "secondary"} onClick={() => setLevel(lv)}>{lv}</Button>
                   ))}
                 </div>
               </div>
